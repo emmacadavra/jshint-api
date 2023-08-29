@@ -37,13 +37,14 @@ async function postForm(e) {
     if (response.ok) {
         displayErrors(data);
     } else {
+        displayException(data);
         throw new Error(data.error);
     }
 }
 
 function displayErrors(data) {
 
-    let heading = `JSHint Results for ${data.file}`;
+    let heading = `JSHint Results for ${data.file}:`;
 
     if (data.total_errors === 0) {
         results = `<div class="no_errors">No errors reported!</div>`;
@@ -72,6 +73,7 @@ async function getStatus(e) {
     if (response.ok) {
         displayStatus(data);
     } else {
+        displayException(data);
         throw new Error(data.error);
     }
 }
@@ -82,6 +84,21 @@ function displayStatus(data) {
     let results = `<div>Your key is valid until</div>`;
 
     results += `<div class="key-status">${data.expiry}</div>`;
+
+    document.getElementById("resultsModalTitle").innerText = heading;
+    document.getElementById("results-content").innerHTML = results;
+
+    resultsModal.show();
+}
+
+function displayException(data) {
+
+    let heading = "Error:";
+    let results = `<div>The API returned the following exception(s):</div>`;
+
+    results += `<div>Status code: ${data.status_code}</div>`;
+    results += `<div>Error number: ${data.error_no}</div>`;
+    results += `<div>Description: ${data.error}.</div>`;
 
     document.getElementById("resultsModalTitle").innerText = heading;
     document.getElementById("results-content").innerHTML = results;
